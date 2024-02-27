@@ -1,113 +1,147 @@
+'use client'
 import Image from "next/image";
+import {
+  ReactPhotoSphereViewer,
+  VirtualTourPlugin,
+  GalleryPlugin,
+  MarkersPlugin,
+} from "react-photo-sphere-viewer";
+import React from "react";
 
-export default function Home() {
+const caption = "Oncampus";
+
+function App() {
+  const pSRef = React.createRef();
+
+  const handleReady = (instance) => {
+    const virtualTour = instance.getPlugin(VirtualTourPlugin);
+    if (!virtualTour) return;
+
+    const markerLighthouse = {
+      id: "marker-1",
+      image: "tim-mossholder-rx_GNopVlFs-unsplash.jpg",
+      tooltip: "Cape Florida Light, Key Biscayne",
+      size: { width: 100, height: 100 },
+      anchor: "bottom center",
+      gps: [-80.156479, 60, 3],
+    };
+
+    virtualTour.setNodes(
+      [
+        {
+          id: "1",
+          panorama: "one.jpg",//picture src
+          thumbnail: "one.jpg",//thumbnail of the picture
+          name: "One",//name of the picture
+          caption: `[1] ${caption}`,//caption for the picture
+          links: [{ nodeId: "2" }],//arrow to the next picture and other linked pictures
+          markers: [markerLighthouse],//normal marker that will be seen as an icon on the picture
+          gps: [-80.156479, 25.666725, 3],//gps location of the picture(latitude and longitude,sea level in meters)
+          panoData: { poseHeading: 180, posePitch: 3 },//poseHeading:horizontal degree at which we see when landing in this picture,posePitch: vertical degree at which we see when landing in this picture
+        },
+        {
+          id: "2",
+          panorama: "two.jpg",
+          thumbnail: "two.jpg",
+          name: "Two",
+          caption: `[2] ${caption}`,
+          links: [{ nodeId: "3" }, { nodeId: "1" }],
+          markers: [markerLighthouse],
+          gps: [-80.156168, 25.666725, 3],
+          panoData: { poseHeading: 100 },
+        },
+        {
+          id: "3",
+          panorama: "three.jpg",
+          thumbnail: "three.jpg",
+          name: "Three",
+          caption: `[3] ${caption}`,
+          links: [{ nodeId: "4" }, { nodeId: "5" }],
+          gps: [-80.155932, 25.666498, 3],
+          panoData: { poseHeading: 310 },
+        },
+        {
+          id: "4",
+          panorama: "four.jpg",
+          thumbnail: "four.jpg",
+          name: "Four",
+          caption: `[4] ${caption}`,
+          links: [{ nodeId: "3" }, { nodeId: "5" }],
+          gps: [-80.156089, 25.666357, 3],
+          panoData: { poseHeading: 78 },
+        },
+        {
+          id: "5",
+          panorama: "five.jpg",
+          thumbnail: "five.jpg",
+          name: "Five",
+          caption: `[5] ${caption}`,
+          links: [{ nodeId: "6" }, { nodeId: "4" }],
+          gps: [-80.156292, 25.666446, 3],
+          panoData: { poseHeading: 190 },
+        },
+        {
+          id: "6",
+          panorama: "six.jpg",
+          thumbnail: "six.jpg",
+          name: "Six",
+          caption: `[6] ${caption}`,
+          links: [{ nodeId: "5" }, { nodeId: "7" }],
+          gps: [-80.156465, 25.666496, 3],
+          panoData: { poseHeading: 295 },
+        },
+        {
+          id: "7",
+          panorama: "seven.jpg",
+          thumbnail: "seven.jpg",
+          name: "Seven",
+          caption: `[7] ${caption}`,
+          links: [{ nodeId: "6" }],
+          gps: [-80.15707, 25.6665, 3],
+          panoData: { poseHeading: 250, posePitch: 3 },
+        },
+      ],
+      "1" // Start node index
+      ,
+    );
+  };
+
+  const plugins = [
+    MarkersPlugin,
+    [
+      GalleryPlugin,
+      {
+        thumbnailSize: { width: 100, height: 100 },
+      },
+    ],
+    [
+      VirtualTourPlugin,
+      {
+        positionMode: "gps",
+        renderMode: "3d",
+      },
+    ],
+  ];
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    <div id={"container-360"}>
+      <ReactPhotoSphereViewer
+        ref={pSRef}
+        loadingImg={"images.jpeg"}//picture during transition loading
+        touchmoveTwoFingers={true}
+        mousewheelCtrlKey={true}
+        defaultYaw={"130deg"}
+        navbar={"zoom move gallery caption fullscreen"}
+        height={"100vh"}
+        width={"100%"}
+        onReady={handleReady}//function that will be called when the first picture is loaded
+        littlePlanet={false}
+        plugins={plugins}
+        container={"container-360"}
+        src={"tim-mossholder-rx_GNopVlFs-unsplash.jpg"}//Right before loading the first picture
+      ></ReactPhotoSphereViewer>
+    </div>
   );
 }
+
+export default App;
